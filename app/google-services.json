@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "467129436294",
+    "firebase_url": "https://household-97aab.firebaseio.com",
+    "project_id": "household-97aab",
+    "storage_bucket": "household-97aab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:467129436294:android:1ec00ce26891d72a",
+        "android_client_info": {
+          "package_name": "com.example.parkjunghun.house_hold"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "467129436294-5hcsi9c2fln6uesars756o34j9oos3up.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.parkjunghun.house_hold",
+            "certificate_hash": "c5301594313dec69962ff86800ae9b3a3e1d3df9"
+          }
+        },
+        {
+          "client_id": "467129436294-74ou2fhhs7mjfpnlk23ke775pi0iut67.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDy2RIu8yp-SQxG603mBtdYb1o7C2TGXuI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "467129436294-74ou2fhhs7mjfpnlk23ke775pi0iut67.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
