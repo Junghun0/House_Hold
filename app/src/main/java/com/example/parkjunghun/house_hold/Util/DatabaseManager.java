@@ -1,14 +1,11 @@
 package com.example.parkjunghun.house_hold.Util;
 
 import com.example.parkjunghun.house_hold.Model.UsingInfo;
-import com.example.parkjunghun.house_hold.Model.UsingInfoEvent;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,13 +37,15 @@ public class DatabaseManager {
         usinginfo_databaseReference.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //데이터 가져와서 UI 에 뿌리자!
                 UsingInfo usingInfo = dataSnapshot.getValue(UsingInfo.class);
-                EventBus.getDefault().post(new UsingInfoEvent(true, usingInfo));
+                //Log.e("getUsing info success","success"+dataSnapshot.getValue(UsingInfo.class)); / NULL
+                //EventBus.getDefault().post(new UsingInfoEvent(true, usingInfo));
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                EventBus.getDefault().post(new UsingInfoEvent(false, new UsingInfo()));
+                //EventBus.getDefault().post(new UsingInfoEvent(false, new UsingInfo()));
             }
         });
     }

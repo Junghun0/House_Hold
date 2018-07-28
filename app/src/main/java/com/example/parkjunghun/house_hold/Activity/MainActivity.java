@@ -45,10 +45,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getEventBus(UsingInfoEvent usingInfoEvent){
-        if(usingInfoEvent.isResult()) {
+    public void getEventBus(UsingInfoEvent usingInfoEvent) {
+        if (usingInfoEvent.isResult()) {
             Log.e("get Event Bus", "success");
             DatabaseManager.getInstance().setUsingInfo(usingInfoEvent.getUsingInfo());
+            DatabaseManager.getInstance().getUsingInfo("종민");
         }
     }
 
