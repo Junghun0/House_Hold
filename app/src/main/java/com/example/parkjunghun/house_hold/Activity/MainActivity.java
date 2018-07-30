@@ -7,8 +7,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Button;
+import android.widget.FrameLayout;
 
+import com.example.parkjunghun.house_hold.Fragment.MainFragment;
 import com.example.parkjunghun.house_hold.Model.UsingInfoEvent;
 import com.example.parkjunghun.house_hold.R;
 import com.example.parkjunghun.house_hold.Util.DatabaseManager;
@@ -22,14 +23,15 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.next_btn)
-    Button next_btn;
+    @BindView(R.id.main_frame)
+    FrameLayout main_frame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.RECEIVE_SMS)
@@ -42,14 +44,16 @@ public class MainActivity extends AppCompatActivity {
                         23);
             }
         }
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame , new MainFragment()).commit();
     }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getEventBus(UsingInfoEvent usingInfoEvent) {
         if (usingInfoEvent.isResult()) {
-            Log.e("get Event Bus", "success");
+            //Firebase database 데이터넣음
             DatabaseManager.getInstance().setUsingInfo(usingInfoEvent.getUsingInfo());
-            DatabaseManager.getInstance().getUsingInfo("종민");
+            DatabaseManager.getInstance().getUsingInfo();
         }
     }
 
@@ -60,19 +64,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        EventBus.getDefault().register(this);
         super.onStart();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onStop() {
         EventBus.getDefault().unregister(this);
-        super.onStop();
+        super.onDestroy();
     }
 
     @Override
