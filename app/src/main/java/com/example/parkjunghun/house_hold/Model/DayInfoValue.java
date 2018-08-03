@@ -3,27 +3,19 @@ package com.example.parkjunghun.house_hold.Model;
 import java.util.ArrayList;
 
 public class DayInfoValue {
-    public String day;
-    public ArrayList<DayInfoModel> dayInfoModelArrayList;
+    public ArrayList<UsingInfo> dayInfoModelArrayList;
 
-    public DayInfoValue(String day, ArrayList<DayInfoModel> dayInfoModelArrayList) {
-        this.day = day;
+    public DayInfoValue(){}
+
+    public DayInfoValue(ArrayList<UsingInfo> dayInfoModelArrayList) {
         this.dayInfoModelArrayList = dayInfoModelArrayList;
     }
 
-    public String getDay() {
-        return day;
-    }
-
-    public void setDay(String day) {
-        this.day = day;
-    }
-
-    public ArrayList<DayInfoModel> getDayInfoModelArrayList() {
+    public ArrayList<UsingInfo> getDayInfoModelArrayList() {
         return dayInfoModelArrayList;
     }
 
-    public void setDayInfoModelArrayList(ArrayList<DayInfoModel> dayInfoModelArrayList) {
+    public void setDayInfoModelArrayList(ArrayList<UsingInfo> dayInfoModelArrayList) {
         this.dayInfoModelArrayList = dayInfoModelArrayList;
     }
 }

@@ -8,15 +8,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.parkjunghun.house_hold.Model.TodayInfoEvent;
 import com.example.parkjunghun.house_hold.Model.UsinglastInfoEvent;
 import com.example.parkjunghun.house_hold.R;
+import com.example.parkjunghun.house_hold.Util.ListViewAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
@@ -29,6 +33,11 @@ public class MainFragment extends Fragment{
     TextView today_remain_money;
     public static int adder_using;
     public static int adder_using_result;
+    ListView listView;
+    ListViewAdapter adapter;
+    TodayInfoEvent todayInfoEvent;
+
+    private SimpleDateFormat simpleDateFormat_day = new SimpleDateFormat("yyyy_MM_dd");
 
 
     @Nullable
@@ -39,11 +48,13 @@ public class MainFragment extends Fragment{
 
         today_using_txtview = (TextView)view.findViewById(R.id.today_using_money_txtview);
         today_remain_money = (TextView)view.findViewById(R.id.today_remain_money_txtview);
-
+        listView = (ListView)view.findViewById(R.id.main_listview);
+        adapter = new ListViewAdapter();
+        listView.setAdapter(adapter);
         adder_using = 0;
 
         /* starts before 1 month from now */
-         Calendar startDate = Calendar.getInstance();
+        Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.MONTH, -1);
 
         /* ends after 1 month from now */
@@ -61,6 +72,7 @@ public class MainFragment extends Fragment{
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
+                Toast.makeText(getActivity(), ""+simpleDateFormat_day.format(date), Toast.LENGTH_SHORT).show();
                 //do something
             }
         });
@@ -68,13 +80,13 @@ public class MainFragment extends Fragment{
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
+                Toast.makeText(getActivity(), ""+simpleDateFormat_day.format(date.getTime()), Toast.LENGTH_SHORT).show();
 
             }
 
             @Override
             public void onCalendarScroll(HorizontalCalendarView calendarView,
                                          int dx, int dy) {
-
             }
 
             @Override
@@ -92,16 +104,18 @@ public class MainFragment extends Fragment{
         Log.e("get last Event BUs","succes"+usinglastInfoEvent.getBalance()+","+usinglastInfoEvent.getUsing_money());
         adder_using_result = adder_using+usinglastInfoEvent.getUsing_money();
         today_using_txtview.setText(String.valueOf(adder_using_result));
+
         adder_using = Integer.valueOf(today_using_txtview.getText().toString());
-
-        Toast.makeText(getActivity(), ""+usinglastInfoEvent.getLast_using_info(), Toast.LENGTH_SHORT).show();
-
         today_remain_money.setText(String.valueOf(usinglastInfoEvent.getBalance()));
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    @Subscribe(sticky = true)
+    public void getTodayInfoevent(TodayInfoEvent todayInfoEvent){
+        adapter.clearListview();
+        for(int i=0; i < todayInfoEvent.getDayInfoModels().size(); i++){
+            adapter.addItem(todayInfoEvent.getDayInfoModels().get(i).using_money,todayInfoEvent.getDayInfoModels().get(i).using_place, todayInfoEvent.getDayInfoModels().get(i).using_time);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override

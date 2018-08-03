@@ -16,7 +16,6 @@ import com.example.parkjunghun.house_hold.Util.DatabaseManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,12 +47,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe
     public void getEventBus(UsingInfoEvent usingInfoEvent) {
         if (usingInfoEvent.isResult()) {
             //Firebase database 데이터넣음
             DatabaseManager.getInstance().setUsingInfo(usingInfoEvent.getUsingInfo());
             DatabaseManager.getInstance().getUsingInfo();
+            DatabaseManager.getInstance().gettodayInfo();
         }
     }
 

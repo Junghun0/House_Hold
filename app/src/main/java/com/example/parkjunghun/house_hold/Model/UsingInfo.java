@@ -7,15 +7,17 @@ public class UsingInfo {
     private String using_bank;
     private String using_place;
     private String balance;
+    private String using_time;
 
     public UsingInfo(){}
 
-    public UsingInfo(String user_name, String using_money, String using_bank, String using_place, String balance) {
+    public UsingInfo(String user_name, String using_money, String using_bank, String using_place, String balance, String using_time) {
         this.user_name = user_name;
         this.using_money = using_money;
         this.using_bank = using_bank;
         this.using_place = using_place;
         this.balance = balance;
+        this.using_time = using_time;
     }
 
     public String getUser_name() {
@@ -56,5 +58,13 @@ public class UsingInfo {
 
     public void setBalance(String balance) {
         this.balance = balance;
+    }
+
+    public String getUsing_time() {
+        return using_time;
+    }
+
+    public void setUsing_time(String using_time) {
+        this.using_time = using_time;
     }
 }

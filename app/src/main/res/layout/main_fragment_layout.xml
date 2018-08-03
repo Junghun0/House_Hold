@@ -48,8 +48,7 @@
                 android:textColor="#e4135c"
                 android:id="@+id/today_using_money_txtview"
                 android:layout_gravity="center"
-                android:layout_margin="3dp"
-                android:text="1111"/>
+                android:layout_margin="3dp"/>
 
 
             <TextView
@@ -67,8 +66,7 @@
                 android:textColor="#0e0ec4"
                 android:layout_margin="3dp"
                 android:layout_gravity="center"
-                android:id="@+id/today_remain_money_txtview"
-                android:text="1111"/>
+                android:id="@+id/today_remain_money_txtview" />
 
         </LinearLayout>
     </LinearLayout>

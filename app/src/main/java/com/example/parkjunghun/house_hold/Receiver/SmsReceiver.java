@@ -79,7 +79,7 @@ public class SmsReceiver extends BroadcastReceiver{
             int remained_money = Integer.parseInt(remain_money.replaceAll(",",""));
             Log.e("remain_money_parse",""+remained_money);
 
-            UsingInfo usingInfo = new UsingInfo("종민",using_money,"우리은행",lines[4], String.valueOf(remained_money));
+            UsingInfo usingInfo = new UsingInfo("종민",using_money,"우리은행",lines[4], String.valueOf(remained_money),Util.getInstance().getCurTime());
             Util.getInstance().setUsingInfo(usingInfo);
             EventBus.getDefault().post(new UsingInfoEvent(true,usingInfo));
         }
