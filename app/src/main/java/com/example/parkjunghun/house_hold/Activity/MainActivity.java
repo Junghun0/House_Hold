@@ -10,12 +10,16 @@ import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.example.parkjunghun.house_hold.Fragment.MainFragment;
+import com.example.parkjunghun.house_hold.Model.StoreUsingInfo;
 import com.example.parkjunghun.house_hold.Model.UsingInfoEvent;
 import com.example.parkjunghun.house_hold.R;
 import com.example.parkjunghun.house_hold.Util.DatabaseManager;
+import com.example.parkjunghun.house_hold.Util.FirebaseStoreManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.main_frame)
     FrameLayout main_frame;
+    HashMap<String, Object> datas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+
+        datas = new HashMap<>();
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.RECEIVE_SMS)
@@ -54,6 +61,19 @@ public class MainActivity extends AppCompatActivity {
             DatabaseManager.getInstance().setUsingInfo(usingInfoEvent.getUsingInfo());
             DatabaseManager.getInstance().getUsingInfo();
             DatabaseManager.getInstance().gettodayInfo();
+
+            datas.put("balance",usingInfoEvent.getUsingInfo().getBalance());
+            datas.put("using_money",usingInfoEvent.getUsingInfo().getUsing_money());
+            datas.put("bank",usingInfoEvent.getUsingInfo().getUsing_bank());
+            datas.put("place",usingInfoEvent.getUsingInfo().getUsing_place());
+            datas.put("using_time",usingInfoEvent.getUsingInfo().getUsing_time());
+
+            StoreUsingInfo storeUsingInfo = new StoreUsingInfo();
+            storeUsingInfo.setUsingmap(datas);
+
+            Log.i("usinginfo 이벤트@@@@@","@@@@");
+
+            FirebaseStoreManager.getInstance().setUsingInfo(storeUsingInfo);
         }
     }
 

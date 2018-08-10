@@ -12,9 +12,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.parkjunghun.house_hold.Model.StoreInfoEvent;
 import com.example.parkjunghun.house_hold.Model.TodayInfoEvent;
 import com.example.parkjunghun.house_hold.Model.UsinglastInfoEvent;
 import com.example.parkjunghun.house_hold.R;
+import com.example.parkjunghun.house_hold.Util.FirebaseStoreManager;
 import com.example.parkjunghun.house_hold.Util.ListViewAdapter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -39,16 +41,14 @@ public class MainFragment extends Fragment{
 
     private SimpleDateFormat simpleDateFormat_day = new SimpleDateFormat("yyyy_MM_dd");
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_fragment_layout,container,false);
-        EventBus.getDefault().register(this);
 
-        today_using_txtview = (TextView)view.findViewById(R.id.today_using_money_txtview);
-        today_remain_money = (TextView)view.findViewById(R.id.today_remain_money_txtview);
-        listView = (ListView)view.findViewById(R.id.main_listview);
+        today_using_txtview = view.findViewById(R.id.today_using_money_txtview);
+        today_remain_money = view.findViewById(R.id.today_remain_money_txtview);
+        listView = view.findViewById(R.id.main_listview);
         adapter = new ListViewAdapter();
         listView.setAdapter(adapter);
         adder_using = 0;
@@ -72,7 +72,7 @@ public class MainFragment extends Fragment{
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
-                Toast.makeText(getActivity(), ""+simpleDateFormat_day.format(date), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "on dateselected"+simpleDateFormat_day.format(date), Toast.LENGTH_SHORT).show();
                 //do something
             }
         });
@@ -81,7 +81,7 @@ public class MainFragment extends Fragment{
             @Override
             public void onDateSelected(Calendar date, int position) {
                 Toast.makeText(getActivity(), ""+simpleDateFormat_day.format(date.getTime()), Toast.LENGTH_SHORT).show();
-
+                FirebaseStoreManager.getInstance().getUsingInfo(simpleDateFormat_day.format(date.getTime()));
             }
 
             @Override
@@ -98,6 +98,12 @@ public class MainFragment extends Fragment{
         return view;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
+        super.onCreate(savedInstanceState);
+    }
+
     @Subscribe
     public void getlastBus(UsinglastInfoEvent usinglastInfoEvent){
         //마지막 사용내역 가져오기
@@ -110,12 +116,22 @@ public class MainFragment extends Fragment{
     }
 
     @Subscribe(sticky = true)
+    public void getstoreInfoEvent(StoreInfoEvent storeInfoEvent){
+                for(int i=0; i<storeInfoEvent.getRoofsize() ; i++){
+                    listView.setAdapter(adapter);
+                    adapter.addItem(storeInfoEvent.getParseModelArrayList().get(i).getUsing_money(),storeInfoEvent.getParseModelArrayList().get(i).getPlace(),storeInfoEvent.getParseModelArrayList().get(i).getUsing_time());
+                    adapter.notifyDataSetChanged();
+                }
+
+    }
+
+    @Subscribe(sticky = true)
     public void getTodayInfoevent(TodayInfoEvent todayInfoEvent){
-        adapter.clearListview();
-        for(int i=0; i < todayInfoEvent.getDayInfoModels().size(); i++){
-            adapter.addItem(todayInfoEvent.getDayInfoModels().get(i).using_money,todayInfoEvent.getDayInfoModels().get(i).using_place, todayInfoEvent.getDayInfoModels().get(i).using_time);
-            adapter.notifyDataSetChanged();
-        }
+//        adapter.clearListview();
+//        for(int i=0; i < todayInfoEvent.getDayInfoModels().size(); i++){
+//            adapter.addItem(todayInfoEvent.getDayInfoModels().get(i).using_money,todayInfoEvent.getDayInfoModels().get(i).using_place, todayInfoEvent.getDayInfoModels().get(i).using_time);
+//            adapter.notifyDataSetChanged();
+//        }
     }
 
     @Override

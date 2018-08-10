@@ -81,7 +81,8 @@ public class SmsReceiver extends BroadcastReceiver{
 
             UsingInfo usingInfo = new UsingInfo("종민",using_money,"우리은행",lines[4], String.valueOf(remained_money),Util.getInstance().getCurTime());
             Util.getInstance().setUsingInfo(usingInfo);
-            EventBus.getDefault().post(new UsingInfoEvent(true,usingInfo));
+
+            EventBus.getDefault().post(new UsingInfoEvent(true, usingInfo));
         }
     }
 

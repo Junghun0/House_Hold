@@ -30,7 +30,6 @@ public class DatabaseManager {
 
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference usinginfo_databaseReference;
-    private DatabaseReference todayinfo_databaseReference;
     private SimpleDateFormat simpleDateFormat_day = new SimpleDateFormat("yyyy_MM_dd");
     private Date date = new Date();
 
@@ -41,7 +40,6 @@ public class DatabaseManager {
     public DatabaseManager() {
         firebaseDatabase = FirebaseDatabase.getInstance();
         usinginfo_databaseReference = firebaseDatabase.getReference("using_info");
-        todayinfo_databaseReference = firebaseDatabase.getReference(simpleDateFormat_day.format(date));
     }
 
     public void setUsingInfo(UsingInfo usingInfo) {
@@ -79,12 +77,13 @@ public class DatabaseManager {
                 int bus_usingmoney = Integer.parseInt(usingInfo.getUsing_money().replaceAll(",", ""));
                 int bus_getbalance = Integer.parseInt(usingInfo.getBalance().replaceAll(",", ""));
                 usingInfoArrayList.add(usingInfo);
+
                 EventBus.getDefault().post(new UsinglastInfoEvent(true, bus_usingmoney, bus_getbalance, usingInfo.getUsing_place()));
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.e("onchildchanged", "" + dataSnapshot.getValue());
+                Log.e("onchildchanged", "" + dataSnapshot.getValue()+",");
             }
 
             @Override

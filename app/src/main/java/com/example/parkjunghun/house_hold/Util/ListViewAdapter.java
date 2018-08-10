@@ -48,9 +48,9 @@ public class ListViewAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.listview_layout,parent,false);
         }
 
-        TextView usingmoney_txtview = (TextView)convertView.findViewById(R.id.usingmoney_list);
-        TextView usingplace_txtview = (TextView)convertView.findViewById(R.id.usingplace_list);
-        TextView usingdate_txtview = (TextView)convertView.findViewById(R.id.usingdate_list);
+        TextView usingmoney_txtview = convertView.findViewById(R.id.usingmoney_list);
+        TextView usingplace_txtview = convertView.findViewById(R.id.usingplace_list);
+        TextView usingdate_txtview = convertView.findViewById(R.id.usingdate_list);
 
         ListViewItem listViewItem = listViewItems.get(position);
 
