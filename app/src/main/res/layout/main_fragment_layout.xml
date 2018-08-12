@@ -23,14 +23,15 @@
 
             <ListView
                 android:id="@+id/main_listview"
+                android:background="#80a4e6be"
                 android:layout_width="match_parent"
-                android:layout_height="450dp">
+                android:layout_height="460dp">
             </ListView>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#7b7b84"
+            android:background="#8e978f"
             android:orientation="horizontal">
 
             <TextView
@@ -38,7 +39,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="총 사용액 : "
-                android:layout_margin="3dp"
+                android:textStyle="bold"
+                android:layout_margin="5dp"
                 android:layout_weight="1"/>
 
             <TextView
@@ -55,7 +57,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="잔 액 : "
-                android:layout_margin="3dp"
+                android:textStyle="bold"
+                android:layout_margin="5dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"/>
 

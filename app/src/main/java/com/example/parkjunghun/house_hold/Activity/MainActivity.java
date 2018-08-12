@@ -19,6 +19,8 @@ import com.example.parkjunghun.house_hold.Util.FirebaseStoreManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -29,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.main_frame)
     FrameLayout main_frame;
     HashMap<String, Object> datas;
+    private SimpleDateFormat simpleDateFormat_day = new SimpleDateFormat("yyyy_MM_dd");
+    private Date cur_date = new Date();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +72,10 @@ public class MainActivity extends AppCompatActivity {
             datas.put("bank",usingInfoEvent.getUsingInfo().getUsing_bank());
             datas.put("place",usingInfoEvent.getUsingInfo().getUsing_place());
             datas.put("using_time",usingInfoEvent.getUsingInfo().getUsing_time());
+            datas.put("date",simpleDateFormat_day.format(cur_date));
 
             StoreUsingInfo storeUsingInfo = new StoreUsingInfo();
             storeUsingInfo.setUsingmap(datas);
-
-            Log.i("usinginfo 이벤트@@@@@","@@@@");
 
             FirebaseStoreManager.getInstance().setUsingInfo(storeUsingInfo);
         }

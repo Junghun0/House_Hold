@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
@@ -38,8 +38,10 @@ public class MainFragment extends Fragment{
     ListView listView;
     ListViewAdapter adapter;
     TodayInfoEvent todayInfoEvent;
+    private int sum;
 
     private SimpleDateFormat simpleDateFormat_day = new SimpleDateFormat("yyyy_MM_dd");
+    private Date cur_date = new Date();
 
     @Nullable
     @Override
@@ -52,6 +54,8 @@ public class MainFragment extends Fragment{
         adapter = new ListViewAdapter();
         listView.setAdapter(adapter);
         adder_using = 0;
+
+        FirebaseStoreManager.getInstance().getUsingInfo(simpleDateFormat_day.format(cur_date));
 
         /* starts before 1 month from now */
         Calendar startDate = Calendar.getInstance();
@@ -73,7 +77,6 @@ public class MainFragment extends Fragment{
             @Override
             public void onDateSelected(Calendar date, int position) {
                 Toast.makeText(getActivity(), "on dateselected"+simpleDateFormat_day.format(date), Toast.LENGTH_SHORT).show();
-                //do something
             }
         });
 
@@ -81,6 +84,7 @@ public class MainFragment extends Fragment{
             @Override
             public void onDateSelected(Calendar date, int position) {
                 Toast.makeText(getActivity(), ""+simpleDateFormat_day.format(date.getTime()), Toast.LENGTH_SHORT).show();
+                FirebaseStoreManager.getInstance().cleartestlist();
                 FirebaseStoreManager.getInstance().getUsingInfo(simpleDateFormat_day.format(date.getTime()));
             }
 
@@ -107,31 +111,42 @@ public class MainFragment extends Fragment{
     @Subscribe
     public void getlastBus(UsinglastInfoEvent usinglastInfoEvent){
         //마지막 사용내역 가져오기
-        Log.e("get last Event BUs","succes"+usinglastInfoEvent.getBalance()+","+usinglastInfoEvent.getUsing_money());
-        adder_using_result = adder_using+usinglastInfoEvent.getUsing_money();
-        today_using_txtview.setText(String.valueOf(adder_using_result));
-
         adder_using = Integer.valueOf(today_using_txtview.getText().toString());
         today_remain_money.setText(String.valueOf(usinglastInfoEvent.getBalance()));
     }
 
     @Subscribe(sticky = true)
     public void getstoreInfoEvent(StoreInfoEvent storeInfoEvent){
-                for(int i=0; i<storeInfoEvent.getRoofsize() ; i++){
-                    listView.setAdapter(adapter);
-                    adapter.addItem(storeInfoEvent.getParseModelArrayList().get(i).getUsing_money(),storeInfoEvent.getParseModelArrayList().get(i).getPlace(),storeInfoEvent.getParseModelArrayList().get(i).getUsing_time());
-                    adapter.notifyDataSetChanged();
-                }
+        if(storeInfoEvent.isResult()){
+            adapter.clearListview();
+            for(int i=0; i<storeInfoEvent.getRoofsize() ; i++){
+                listView.setAdapter(adapter);
+                adapter.addItem(storeInfoEvent.getParseModelArrayList().get(i).getUsing_money(),storeInfoEvent.getParseModelArrayList().get(i).getPlace(),storeInfoEvent.getParseModelArrayList().get(i).getUsing_time());
+                adapter.notifyDataSetChanged();
+            }
+
+            for(int j=0 ; j<storeInfoEvent.getRoofsize(); j++){
+                storeInfoEvent.getParseModelArrayList().get(j).getUsing_money().replaceAll(",","");
+                sum = sum + Integer.valueOf(storeInfoEvent.getParseModelArrayList().get(j).getUsing_money().replaceAll(",",""));
+            }
+
+            today_using_txtview.setText(String.valueOf(sum));
+            sum=0;
+
+        }else{
+            adapter.clearListview();
+            adapter.notifyDataSetInvalidated();
+        }
 
     }
 
     @Subscribe(sticky = true)
     public void getTodayInfoevent(TodayInfoEvent todayInfoEvent){
-//        adapter.clearListview();
-//        for(int i=0; i < todayInfoEvent.getDayInfoModels().size(); i++){
-//            adapter.addItem(todayInfoEvent.getDayInfoModels().get(i).using_money,todayInfoEvent.getDayInfoModels().get(i).using_place, todayInfoEvent.getDayInfoModels().get(i).using_time);
-//            adapter.notifyDataSetChanged();
-//        }
+        adapter.clearListview();
+        for(int i=0; i < todayInfoEvent.getDayInfoModels().size(); i++){
+            adapter.addItem(todayInfoEvent.getDayInfoModels().get(i).using_money,todayInfoEvent.getDayInfoModels().get(i).using_place, todayInfoEvent.getDayInfoModels().get(i).using_time);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override

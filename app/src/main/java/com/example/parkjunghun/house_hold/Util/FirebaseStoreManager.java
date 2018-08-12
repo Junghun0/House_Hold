@@ -36,10 +36,11 @@ public class FirebaseStoreManager{
 
     FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
             .setTimestampsInSnapshotsEnabled(true)
+            .setPersistenceEnabled(true)
             .build();
     private FirebaseFirestore db;
     private SimpleDateFormat simpleDateFormat_day = new SimpleDateFormat("yyyy_MM_dd");
-    private Date date = new Date();
+    private Date cur_date = new Date();
 
     public static FirebaseStoreManager getInstance() {
         return instance;
@@ -57,11 +58,12 @@ public class FirebaseStoreManager{
         db = FirebaseFirestore.getInstance();
         db.setFirestoreSettings(settings);
 
-        db.collection("smsInfo").document(simpleDateFormat_day.format(date).toString());
+        db.collection("smsInfo").document(simpleDateFormat_day.format(cur_date).toString());
     }
 
     public void setUsingInfo(StoreUsingInfo storeUsingInfo){
-        db.collection("smsInfo").document(simpleDateFormat_day.format(date).toString()).collection("dayInfo").add(storeUsingInfo).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        db.collection("smsInfo").document(simpleDateFormat_day.format(cur_date).toString()).collection("dayInfo").add(storeUsingInfo)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 Log.i("firebasestore onSuccess","onsucces");
@@ -74,40 +76,43 @@ public class FirebaseStoreManager{
         });
     }
 
-    public void getUsingInfo(final String date){
+    public void getUsingInfo(final String date) {
         db.collection("smsInfo").document(date).collection("dayInfo").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    Log.i("getusinginfo method called","true");
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Log.d("FirebaseStore@", document.getId() + " => " + document.getData());
                         datalist.add(document.getData());
                     }
 
-                    for(int i=0; i < datalist.size();i++){
-                        datamap.put("mydata",datalist.get(i).get("usingmap"));
+                    for (int i = 0; i < datalist.size(); i++) {
+                        datamap.put("mydata", datalist.get(i).get("usingmap"));
                     }
 
-                    for(int i=0; i <datalist.size();i++){
+                    for (int i = 0; i < datalist.size(); i++) {
+                        Log.d("mydata~~", "" + ((Map) datalist.get(i).get("usingmap")).get("bank"));
+                        Log.d("mydata~~", "" + ((Map) datalist.get(i).get("usingmap")).get("using_time"));
+                        Log.d("mydata~~", "" + ((Map) datalist.get(i).get("usingmap")).get("balance"));
+                        Log.d("mydata~~", "" + ((Map) datalist.get(i).get("usingmap")).get("place"));
+                        Log.d("mydata~~", "" + ((Map) datalist.get(i).get("usingmap")).get("using_money"));
 
-                        Log.d("mydata~~",""+((Map)datalist.get(i).get("usingmap")).get("bank"));
-                        Log.d("mydata~~",""+((Map)datalist.get(i).get("usingmap")).get("using_time"));
-                        Log.d("mydata~~",""+((Map)datalist.get(i).get("usingmap")).get("balance"));
-                        Log.d("mydata~~",""+((Map)datalist.get(i).get("usingmap")).get("place"));
-                        Log.d("mydata~~",""+((Map)datalist.get(i).get("usingmap")).get("using_money"));
-
-                        storeParseModel = new StoreParseModel(((Map)datalist.get(i).get("usingmap")).get("bank").toString(), ((Map)datalist.get(i).get("usingmap")).get("using_time").toString(),((Map)datalist.get(i).get("usingmap")).get("balance").toString(),((Map)datalist.get(i).get("usingmap")).get("place").toString(),((Map)datalist.get(i).get("usingmap")).get("using_money").toString());
+                        storeParseModel = new StoreParseModel(((Map) datalist.get(i).get("usingmap")).get("bank").toString(), ((Map) datalist.get(i).get("usingmap")).get("using_time").toString(), ((Map) datalist.get(i).get("usingmap")).get("balance").toString(), ((Map) datalist.get(i).get("usingmap")).get("place").toString(), ((Map) datalist.get(i).get("usingmap")).get("using_money").toString());
                         testlist.add(storeParseModel);
                     }
-                    //result 로 구분해야될듯 ?
-                    EventBus.getDefault().post(new StoreInfoEvent(testlist, true, datalist.size()));
-                } else {
+                        EventBus.getDefault().post(new StoreInfoEvent(testlist, true, datalist.size()));
+                } else{
                     Log.d("FirebaseStore", "Error getting documents: ", task.getException());
                 }
             }
         });
-
     }
 
+    public void cleartestlist(){
+        testlist.clear();
+        datalist.clear();
+        EventBus.getDefault().post(new StoreInfoEvent(testlist,false , datalist.size()));
+    }
 
 }
